@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard de Notas — Turma</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+</head>
+<body>
+  <div class="dashboard">
+    <header class="header">
+      <div class="header-title">
+        <h1>Dashboard de Notas</h1>
+        <p>Desempenho acadêmico da turma · 49 alunos · 9 disciplinas</p>
+      </div>
+
+      <div class="filters">
+        <div class="filter-group">
+          <label>Disciplina</label>
+          <select id="subject-filter">
+            <option value="">Todas as disciplinas</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label>Desempenho</label>
+          <select id="level-filter">
+            <option value="">Todos os níveis</option>
+            <option value="excelente">Excelente (≥ 9.0)</option>
+            <option value="bom">Bom (7.0 – 8.9)</option>
+            <option value="regular">Regular (5.0 – 6.9)</option>
+            <option value="insuficiente">Insuficiente (&lt; 5.0)</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label>Buscar aluno</label>
+          <input type="text" id="search-input" placeholder="Nome do aluno...">
+        </div>
+
+        <div class="filter-group">
+          <label>Nível rápido</label>
+          <div class="filter-buttons">
+            <button class="filter-btn" data-level="excelente">Excelente</button>
+            <button class="filter-btn" data-level="bom">Bom</button>
+            <button class="filter-btn" data-level="regular">Regular</button>
+            <button class="filter-btn" data-level="insuficiente">Insuficiente</button>
+          </div>
+        </div>
+
+        <button class="btn-reset" id="btn-reset">Limpar filtros</button>
+      </div>
+    </header>
+
+    <div id="active-filter" class="active-filter-badge hidden"></div>
+
+    <section class="kpi-grid">
+      <div class="kpi-card">
+        <span class="kpi-label">Alunos exibidos</span>
+        <span class="kpi-value" id="kpi-total">50</span>
+        <span class="kpi-sub">Total filtrado</span>
+      </div>
+      <div class="kpi-card">
+        <span class="kpi-label">Média da turma</span>
+        <span class="kpi-value" id="kpi-average">7.5</span>
+        <span class="kpi-sub">Escala 0 – 10</span>
+      </div>
+      <div class="kpi-card">
+        <span class="kpi-label">Aprovados</span>
+        <span class="kpi-value" id="kpi-approved">35</span>
+        <span class="kpi-sub">Média ≥ 7.0</span>
+      </div>
+      <div class="kpi-card">
+        <span class="kpi-label">Taxa de aprovação</span>
+        <span class="kpi-value" id="kpi-rate">70%</span>
+        <span class="kpi-sub">Entre os filtrados</span>
+      </div>
+      <div class="kpi-card highlight">
+        <span class="kpi-label">Melhor média geral</span>
+        <span class="kpi-value" id="kpi-top-score">9.6</span>
+        <span class="kpi-sub best" id="kpi-top-student">Olivia Castro Ribeiro</span>
+      </div>
+      <div class="kpi-card highlight">
+        <span class="kpi-label">Melhor disciplina</span>
+        <span class="kpi-value" id="kpi-best-subject-score">8.9</span>
+        <span class="kpi-sub best" id="kpi-best-subject">Educação Física</span>
+      </div>
+    </section>
+
+    <section class="charts-grid">
+      <div class="chart-card">
+        <h3>Distribuição por desempenho</h3>
+        <div class="chart-wrapper">
+          <canvas id="chart-donut"></canvas>
+        </div>
+        <p class="chart-hint">Clique em um segmento para filtrar por nível</p>
+      </div>
+
+      <div class="chart-card">
+        <h3>Média por disciplina</h3>
+        <div class="chart-wrapper">
+          <canvas id="chart-subjects"></canvas>
+        </div>
+        <p class="chart-hint">Clique em uma barra para filtrar alunos aprovados na disciplina</p>
+      </div>
+
+      <div class="chart-card">
+        <h3>Top alunos — melhores médias</h3>
+        <ul class="top-list" id="top-list"></ul>
+        <p class="chart-hint">Clique em um aluno para ver detalhes no radar</p>
+      </div>
+
+      <div class="chart-card span-2">
+        <h3>Médias individuais (top 15)</h3>
+        <div class="chart-wrapper tall">
+          <canvas id="chart-students"></canvas>
+        </div>
+        <p class="chart-hint">Clique em uma barra para filtrar por aluno</p>
+      </div>
+
+      <div class="chart-card">
+        <h3>Comparativo por disciplina</h3>
+        <div class="chart-wrapper tall">
+          <canvas id="chart-radar"></canvas>
+        </div>
+        <p class="chart-hint">Aluno selecionado vs. média da turma</p>
+      </div>
+    </section>
+  </div>
+
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
