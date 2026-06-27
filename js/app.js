@@ -16,6 +16,40 @@ const state = {
 
 let charts = {};
 
+function parseCSV(text) {
+  const lines = text.trim().split(/\r?\n/);
+  const headers = lines[0].split(",");
+
+  return lines.slice(1).filter(Boolean).map((line) => {
+    const values = line.split(",");
+    const row = {};
+
+    headers.forEach((header, index) => {
+      const key = header === "Nome" ? "nome" : header;
+      row[key] = key === "nome" ? values[index] : parseFloat(values[index]);
+    });
+
+    return row;
+  });
+}
+
+async function loadStudentsFromCSV() {
+  const response = await fetch(CSV_FILE);
+  if (!response.ok) {
+    throw new Error(`Não foi possível carregar ${CSV_FILE}`);
+  }
+
+  const text = await response.text();
+  STUDENTS = parseCSV(text);
+}
+
+function updateHeaderSubtitle() {
+  const subtitle = document.querySelector(".header-title p");
+  if (subtitle) {
+    subtitle.textContent = `Desempenho acadêmico da turma · ${STUDENTS.length} alunos · ${SUBJECTS.length} disciplinas`;
+  }
+}
+
 function getPerformanceLevel(media) {
   return PERFORMANCE_LEVELS.find((l) => media >= l.min && media <= l.max);
 }
@@ -400,7 +434,23 @@ function initFilters() {
   document.getElementById("btn-reset").addEventListener("click", resetFilters);
 }
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
   initFilters();
-  render();
+
+  try {
+    await loadStudentsFromCSV();
+    updateHeaderSubtitle();
+    render();
+  } catch (error) {
+    console.error(error);
+    document.querySelector(".dashboard").innerHTML = `
+      <div style="padding: 2rem; text-align: center; color: #e53935;">
+        <h2>Erro ao carregar os dados</h2>
+        <p>Não foi possível ler <strong>${CSV_FILE}</strong>.</p>
+        <p style="margin-top: 1rem; color: #555;">
+          Abra o dashboard por um servidor local (Live Server, Python, etc.)
+          em vez de abrir o arquivo HTML diretamente no navegador.
+        </p>
+      </div>`;
+  }
 });
